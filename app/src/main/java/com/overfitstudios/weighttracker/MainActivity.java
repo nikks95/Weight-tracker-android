@@ -2,12 +2,19 @@ package com.overfitstudios.weighttracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.ObjectAnimator;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -15,23 +22,39 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
 import com.overfitstudios.weighttracker.dbhandler.WeightItemDBHandler;
 import com.overfitstudios.weighttracker.model.Weight;
 import com.overfitstudios.weighttracker.model.WeightEntry;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private LineChart lineChart=null;
     private FloatingActionButton addWeightButton;
+    private LinearLayout formLayout;
+    private ImageView closeButton;
+    private Button cancelButton;
+    TextView dateSelect;
+
+    private boolean isSlideup = false;
     private void initComponents(){
         lineChart = findViewById(R.id.lineChart1);
         addWeightButton = findViewById(R.id.addWeightfButton);
 
+        formLayout = findViewById(R.id.formLinearLayout);
+        closeButton = findViewById(R.id.closeButton);
+        cancelButton = findViewById(R.id.cancelButton);
+
+        dateSelect = findViewById(R.id.dateSelector);
         //Set Listeners at end only
         setListeners();
+        //slideUp();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,32 +62,85 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initComponents();
         setupLineChart(getLineData(),lineChart);
+
     }
 
     void setListeners(){
-        addWeightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //animate button
-                    animateButton(view);
-                //todo action on the button
-                    showWeightAddMenu(getApplicationContext(),view);
-            }
+        addWeightButton.setOnClickListener(view -> {
+            //animate button
+                animateButton(view);
+            //todo action on the button
+                showWeightAddMenu(getApplicationContext(),view);
+        });
+
+        cancelButton.setOnClickListener( view -> {
+            slideDown();
+        });
+
+        closeButton.setOnClickListener(view -> {
+            slideDown();
+        });
+
+        dateSelect.setOnClickListener(view->{
+            openDatePicker();
         });
 
 
     }
+    private void openDatePicker(){
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year_, month_, day_) -> {
+            calendar.set(Calendar.YEAR,year_);
+            calendar.set(Calendar.MONTH,month_);
+            calendar.set(Calendar.DAY_OF_MONTH,day_);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String formattedDate = sdf.format(calendar.getTime());
+            dateSelect.setText(formattedDate);
+        },year,month,day
+        );
+        datePickerDialog.show();
+    }
+    private void slide(View view,float height){
+        ObjectAnimator slideUpAnimator = ObjectAnimator.ofFloat(view,"translationY",height);
+        slideUpAnimator.setDuration(500);
+        slideUpAnimator.setInterpolator(new AccelerateInterpolator());
+        slideUpAnimator.start();
+    }
+    private  void toggleFormLayout(){
+        if(isSlideup){
+            slideDown();
+        }
+        else{
+            slideUp();
+        }
+
+        
+    }
+    private void slideUp(){
+        slide(formLayout,0f);
+        //addWeightButton.setVisibility(View.INVISIBLE);
+        isSlideup = true;
+    }
+    private void slideDown(){
+        slide(formLayout,formLayout.getHeight());
+        //addWeightButton.setVisibility(View.VISIBLE);
+        isSlideup = false;
+    }
     private void animateButton(View view){
         ViewPropertyAnimator animator = view.animate()
-                .setStartDelay(300)
+                .setStartDelay(100)
                 .rotation(45f)
                 .setInterpolator(new AccelerateInterpolator());
         animator.withEndAction(() -> view.setRotation(45f));
-        Toast.makeText(getApplicationContext(),"Rotation",Toast.LENGTH_LONG).show();
         animator.start();
     }
     private void showWeightAddMenu(Context context, View view){
-
+        //slideDown();
+        toggleFormLayout();
     }
     LineData getLineData(){
         List<Entry> entries = new ArrayList<>();

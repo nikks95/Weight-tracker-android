@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,7 +15,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_default="spread">
+        app:layout_constraintWidth_default="spread"
+        android:layout_marginTop="16dp">
 
         <!-- Row 1 -->
         <TableRow>
@@ -23,17 +24,20 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Header 1"/>
+                android:text="Header 1"
+                android:textSize="16sp"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Header 2"/>
+                android:text="Header 2"
+                android:textSize="16sp"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Header 3"/>
+                android:text="Header 3"
+                android:textSize="16sp"/>
         </TableRow>
 
         <!-- Row 2 -->
@@ -43,17 +47,20 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Data 1"/>
+                android:text="Data 1"
+                android:textSize="14sp"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Data 2"/>
+                android:text="Data 2"
+                android:textSize="14sp"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Data 3"/>
+                android:text="Data 3"
+                android:textSize="14sp"/>
         </TableRow>
 
         <!-- Add more rows as needed -->
@@ -68,7 +75,8 @@
         app:layout_constraintTop_toBottomOf="@id/tableLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/addWeightfButton"/>
+        app:layout_constraintBottom_toTopOf="@+id/addWeightfButton"
+        android:layout_marginTop="16dp"/>
 
     <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -79,4 +87,124 @@
         android:src="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/formLinearLayout"
+        android:translationY="1000dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_background"
+        android:elevation="4dp"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/closeButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:contentDescription="Close"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter Details"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
+            app:hintTextColor="@android:color/black"
+            app:boxStrokeColor="@android:color/black"
+            app:boxStrokeWidth="0dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputWeight"
+                android:background="@drawable/rounded_inputs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tooltipText="Weight"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:text="Sample"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:inputType="numberDecimal"
+                android:textColor="@android:color/black" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
+
+            app:hintTextColor="@android:color/black"
+            app:boxStrokeColor="@android:color/black"
+            app:boxStrokeWidth="0dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dateSelector"
+                android:background="@drawable/rounded_inputs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tooltipText="Date"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:text="Sample"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:inputType="none"
+                android:focusable="false"
+                android:onClick="openDatePicker"
+                android:textColor="@android:color/black" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="8dp"
+                android:text="Cancel"
+                android:backgroundTint="@color/purple_500"
+                android:textColor="@android:color/white"
+                android:id="@+id/cancelButton"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="24dp"
+                android:layout_gravity="end"
+                android:text="Submit"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/purpule400"
+                android:id="@+id/submitButton"/>
+        </LinearLayout>
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
