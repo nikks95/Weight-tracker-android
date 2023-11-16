@@ -4,33 +4,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ObjectAnimator;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputLayout;
-import com.overfitstudios.weighttracker.dbhandler.WeightItemDBHandler;
-import com.overfitstudios.weighttracker.model.Weight;
-import com.overfitstudios.weighttracker.model.WeightEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private Button cancelButton;
     TextView dateSelect;
 
-    private boolean isSlideup = false;
+    private boolean isSlide = false;
     private void initComponents(){
         lineChart = findViewById(R.id.lineChart1);
         addWeightButton = findViewById(R.id.addWeightfButton);
@@ -70,20 +62,14 @@ public class MainActivity extends AppCompatActivity {
             //animate button
                 animateButton(view);
             //todo action on the button
-                showWeightAddMenu(getApplicationContext(),view);
+                showWeightAddMenu();
         });
 
-        cancelButton.setOnClickListener( view -> {
-            slideDown();
-        });
+        cancelButton.setOnClickListener( view -> slideDown());
 
-        closeButton.setOnClickListener(view -> {
-            slideDown();
-        });
+        closeButton.setOnClickListener(view -> slideDown());
 
-        dateSelect.setOnClickListener(view->{
-            openDatePicker();
-        });
+        dateSelect.setOnClickListener(view-> openDatePicker());
 
 
     }
@@ -111,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         slideUpAnimator.start();
     }
     private  void toggleFormLayout(){
-        if(isSlideup){
+        if(isSlide){
             slideDown();
         }
         else{
@@ -123,12 +109,12 @@ public class MainActivity extends AppCompatActivity {
     private void slideUp(){
         slide(formLayout,0f);
         //addWeightButton.setVisibility(View.INVISIBLE);
-        isSlideup = true;
+        isSlide = true;
     }
     private void slideDown(){
         slide(formLayout,formLayout.getHeight());
         //addWeightButton.setVisibility(View.VISIBLE);
-        isSlideup = false;
+        isSlide = false;
     }
     private void animateButton(View view){
         ViewPropertyAnimator animator = view.animate()
@@ -138,22 +124,20 @@ public class MainActivity extends AppCompatActivity {
         animator.withEndAction(() -> view.setRotation(45f));
         animator.start();
     }
-    private void showWeightAddMenu(Context context, View view){
+    private void showWeightAddMenu(){
         //slideDown();
         toggleFormLayout();
     }
     LineData getLineData(){
         List<Entry> entries = new ArrayList<>();
         for(int i=0;i<10;i++){
-         int x = i;
-         int y = (int)(Math.random()*1000)%100;
-         entries.add(new Entry(x,y));
+            int y = (int)(Math.random()*1000)%100;
+         entries.add(new Entry(i,y));
         }
         LineDataSet dataSet = new LineDataSet(entries,"Random Sampling");
         dataSet.setColor(Color.rgb(135,16,156));
         dataSet.setValueTextColor(Color.WHITE);
-        LineData lineData = new LineData(dataSet);
-        return lineData;
+        return new LineData(dataSet);
     }
     void setupLineChart(LineData data,LineChart chart){
             chart.setData(data);
