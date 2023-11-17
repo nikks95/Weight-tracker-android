@@ -5,7 +5,6 @@ import androidx.core.content.ContextCompat;
 
 import android.animation.ObjectAnimator;
 import android.app.DatePickerDialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -15,7 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -25,7 +24,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.overfitstudios.weighttracker.dbhandler.DBHandler;
+
 import com.overfitstudios.weighttracker.dbhandler.WeightItemDBHandler;
 import com.overfitstudios.weighttracker.formatter.XAxisFormatter;
 import com.overfitstudios.weighttracker.formatter.YAxisFormatter;
@@ -36,12 +35,10 @@ import com.overfitstudios.weighttracker.util.DateUtils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private LineChart lineChart=null;
@@ -113,15 +110,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void saveData(){
+        try {
+            double weight  = Double.parseDouble(Objects.requireNonNull(weightInputBox.getText()).toString().trim());
+            Date date = DateUtils.getDateFromString(dateSelect.getText().toString().trim());
+            WeightEntry weightEntry = new WeightEntry(date,new Weight(weight));
+            WeightItemDBHandler dbHandler = new WeightItemDBHandler(getApplicationContext());
+            boolean status = dbHandler.addToWeightTable(weightEntry);
+            if(!status) throw new Exception("Not able to load in dataBase!");
+            populateChart();
+            slideDown();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
-        double weight  = Double.parseDouble(weightInputBox.getText().toString().trim());
-        Date date = DateUtils.getDateFromString(dateSelect.getText().toString().trim());
-        WeightEntry weightEntry = new WeightEntry(date,new Weight(weight));
-        WeightItemDBHandler dbHandler = new WeightItemDBHandler(getApplicationContext());
-        boolean status = dbHandler.addToWeightTable(weightEntry);
-        if(status==false) ;
-        populateChart();
-        slideDown();
     }
     private void openDatePicker(){
         final Calendar calendar = Calendar.getInstance();
@@ -199,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
     private List<WeightEntry> populateData(){
         WeightItemDBHandler dbHandler = new WeightItemDBHandler(getApplicationContext());
         List<WeightEntry> weightEntries = dbHandler.getAllWeightEntries();
-        Collections.sort(weightEntries, (entry1, entry2) -> DateUtils.compareDate(entry1.getTimestamp(),entry2.getTimestamp()));
+        weightEntries.sort((entry1, entry2) -> DateUtils.compareDate(entry1.getTimestamp(), entry2.getTimestamp()));
 //          return getSampleWeightEntries();
         return weightEntries;
     }

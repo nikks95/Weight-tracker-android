@@ -11,6 +11,10 @@ public class Weight {
         return units;
     }
 
+    public Weight(double weight){
+        this.weight = weight;
+        this.unit = KG;
+    }
     public Weight(double weight, int unit) {
         this.weight = weight;
         this.unit = unit;

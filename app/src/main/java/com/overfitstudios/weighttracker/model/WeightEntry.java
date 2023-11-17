@@ -1,11 +1,17 @@
 package com.overfitstudios.weighttracker.model;
 
 import java.text.DecimalFormat;
+import java.util.Comparator;
 import java.util.Date;
 
 public class WeightEntry {
     private Date timestamp;
     private Weight weight;
+
+    public WeightEntry(Long timestamp,double weight){
+        this.timestamp =  new Date(timestamp);
+        this.weight = new Weight(weight);
+    }
     public WeightEntry(Date timestamp, double weight,int unit){
         this.weight = new Weight(weight,unit);
         this.timestamp = timestamp;
@@ -33,5 +39,9 @@ public class WeightEntry {
     public String getFormattedWeight(double weight){
         DecimalFormat df = new DecimalFormat("0.0");
         return df.format(weight);
+    }
+
+    public String toString(){
+        return ""+getFormattedWeight(this.weight.getWeightinKg())+" on "+timestamp.toString();
     }
 }

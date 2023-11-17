@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.overfitstudios.weighttracker.model.Weight;
 import com.overfitstudios.weighttracker.model.WeightEntry;
@@ -53,12 +54,14 @@ public class WeightItemDBHandler{
     public boolean addToWeightTable(WeightEntry entry){
         boolean status = false;
         SQLiteDatabase db = this.handler.getWritableDatabase();
-        if(!isDateEntryExists(db,entry.getTimestamp())){
+        if(!isDateEntryExistsTimeStamp(db,entry.getTimestamp().getTime())){
             ContentValues values = new ContentValues();
             double weight = entry.getWeight().getWeightinKg();
+            Log.d("ENTTTT",""+weight);
             long timestamp = entry.getTimestamp().getTime();
             values.put(WEIGHTUNIT,weight);
             values.put(WEIGHTTIME,timestamp);
+
             long newRow = db.insert(WEIGHT_TABLE,null,values);
             db.close();
             status  = newRow!=-1;
@@ -82,7 +85,8 @@ public class WeightItemDBHandler{
             int weightUnitIndex = cursor.getColumnIndex(WEIGHTUNIT);
             if(weightUnitIndex!=-1&&weightTimeIndex!=-1) {
                 long timestamp = cursor.getLong(weightTimeIndex);
-                double weight = cursor.getLong(weightUnitIndex);
+                double weight = cursor.getDouble(weightUnitIndex);
+                Log.d("DBENTRY",weight+"   "+timestamp);
                 Date date = new Date(timestamp);
                 WeightEntry entry = new WeightEntry(date,new Weight(weight,Weight.KG));
                 entries.add(entry);
@@ -112,5 +116,20 @@ public class WeightItemDBHandler{
         Cursor cursor = db.query(WEIGHT_TABLE,null,"strftime('%Y-%m-%d',"+WEIGHTTIME+"/1000, 'unixepoch') = ?",new String[]{dateString},null,null,null);
         int count = cursor.getCount();
         return count>0;
+    }
+    private boolean isDateEntryExistsTimeStamp(SQLiteDatabase db, long timestamp) {
+        Cursor cursor = db.query(
+                WEIGHT_TABLE,
+                null,
+                WEIGHTTIME + " = ?",
+                new String[]{String.valueOf(timestamp)},
+                null,
+                null,
+                null
+        );
+
+        int count = cursor.getCount();
+        cursor.close(); // Close the cursor to avoid resource leaks
+        return count > 0;
     }
 }
