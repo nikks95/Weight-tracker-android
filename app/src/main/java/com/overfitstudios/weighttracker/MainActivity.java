@@ -80,10 +80,7 @@ public class MainActivity extends AppCompatActivity {
         populateChart();
 
     }
-    private void populateChart(){
-        entries = populateData();
-        setupLineChart(getLineData(entries),lineChart);
-    }
+
     private void setDefaults(){
         weightInputBox.setText("");
         weightInputBox.setHint("Weight");
@@ -183,20 +180,6 @@ public class MainActivity extends AppCompatActivity {
         //slideDown();
         toggleFormLayout();
     }
-    private LineData getLineData(List<WeightEntry> weightEntries){
-        List<Entry> entries = new ArrayList<>();
-        int x = 0;
-        for(WeightEntry entry:weightEntries){
-            entries.add(new Entry(x,(float) (0.0f+entry.getWeight().getWeightinKg())));
-            Log.d("WEIGHTTAG",""+entry);
-            x+=1;
-        }
-        LineDataSet dataSet = new LineDataSet(entries,"Weight Tracker");
-        dataSet.setColor(ContextCompat.getColor(getApplicationContext(),R.color.purple_700));
-        dataSet.setValueTextColor(ContextCompat.getColor(getApplicationContext(),R.color.white));
-        return new LineData(dataSet);
-
-    }
 
     private List<WeightEntry> populateData(){
         WeightItemDBHandler dbHandler = new WeightItemDBHandler(getApplicationContext());
@@ -204,6 +187,10 @@ public class MainActivity extends AppCompatActivity {
         weightEntries.sort((entry1, entry2) -> DateUtils.compareDate(entry1.getTimestamp(), entry2.getTimestamp()));
 //          return getSampleWeightEntries();
         return weightEntries;
+    }
+    private void populateChart(){
+        entries = populateData();
+        setupLineChart(getLineData(entries),lineChart);
     }
     void setupLineChart(LineData data,LineChart chart){
         chart.setData(data);
@@ -219,6 +206,21 @@ public class MainActivity extends AppCompatActivity {
 
         chart.invalidate();
     }
+    private LineData getLineData(List<WeightEntry> weightEntries){
+        List<Entry> entries = new ArrayList<>();
+        int x = 0;
+        for(WeightEntry entry:weightEntries){
+            entries.add(new Entry(x,(float) (0.0f+entry.getWeight().getWeightinKg())));
+            Log.d("WEIGHTTAG",""+entry);
+            x+=1;
+        }
+        LineDataSet dataSet = new LineDataSet(entries,"Weight Tracker");
+        dataSet.setColor(ContextCompat.getColor(getApplicationContext(),R.color.purple_700));
+        dataSet.setValueTextColor(ContextCompat.getColor(getApplicationContext(),R.color.white));
+        return new LineData(dataSet);
+    }
+
+    //Test code to perform
     private List<WeightEntry> getSampleWeightEntries() {
         List<WeightEntry> entries = new ArrayList<>();
         entries.add(new WeightEntry(System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000, 70.5));
